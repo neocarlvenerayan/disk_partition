@@ -1,0 +1,31 @@
+- name: Create partition   
+  hosts: all
+  become: true
+  any_errors_fatal: True
+  gather_facts: false
+  vars: 
+    include_mpath: false
+    #disk_process: LFM
+    tmp_folder: /tmp/carbon_tmp
+    disk_items:              # extra variables
+       - { server0: rhel7, disk0: sdb, partition0: 1, fsname0: '/opt/tools', vgname0: toolsvg, lvname0: toolslv, size0: +100%FREE }
+       - { server0: rhel8, disk0: sdb, partition0: 1, fsname0: '/opt/tools', vgname0: toolsvg, lvname0: toolslv, size0: +100%FREE }
+    continue_x: true
+  tasks:
+    - name: Loop over role
+      include_role:
+        name: disk
+      vars:
+        disk_process: DPVLFM   # D=create raw disk P=physical volume V=volumegroup L=logicalvolume F=filesystem M=mount
+        create_partition_nolog: true
+        server: "{{ item.server0 }}"
+        disk1:  "{{ item.disk0 }}"
+        pvname: "{{ item.disk0 }}"
+        partition: "{{ item.partition0 }}"
+        fsname: "{{ item.fsname0 }}"
+        vgname: "{{ item.vgname0 }}"
+        lvname: "{{ item.lvname0 }}"
+        size: "{{ item.size0 }}"
+      with_items: 
+         - "{{disk_items}}"
+  tags: create_partition
