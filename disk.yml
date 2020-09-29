@@ -5,10 +5,12 @@
   gather_facts: false
   vars: 
     include_mpath: false
-    #disk_process: LFM
+    disk_process: LFM
+    forcefst: '' # need to be defined and '' or ext3 or ext4 or xfs, default '' is defined it will automatically identify on the system the fstype
+                 # if you need to define this per server, you need to add in the inventory of the variable
     tmp_folder: /tmp/carbon_tmp
     disk_items:              # extra variables
-       - { server0: rhel7, disk0: sdb, partition0: 1, fsname0: '/opt/tools', vgname0: toolsvg, lvname0: toolslv, size0: +100%FREE }
+       - { server0: rhel7, disk0: sdb, partition0: 2, fsname0: '/test/test2', vgname0: testvg, lvname0: test2lv, size0: 3g }
        - { server0: rhel8, disk0: sdb, partition0: 1, fsname0: '/opt/tools', vgname0: toolsvg, lvname0: toolslv, size0: +100%FREE }
     continue_x: true
   tasks:
